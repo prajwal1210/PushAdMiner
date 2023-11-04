@@ -22,13 +22,17 @@ async function load_page(url,id,i_count,wait_time){
   const height = 1020
 
   var home_dir= '/home/pptruser/'
+
+  console.log("Trying to launch puppeteer")
   
   await puppeteer.launch({ headless:false,  executablePath:home_dir+'chromium/chrome',
                            userDataDir:home_dir+'chrome_user/',
+                           timeout: 30000,
                            args: [
                                   '--enable-features=NetworkService',
                                   '--no-sandbox',
                                   '--disable-setuid-sandbox',
+                                  //'--single-process',
                                   '--window-size=${ width },${ height }',
                                   //'--start-maximized',
                                   '--ignore-certificate-errors','--disable-gpu', 
@@ -38,6 +42,7 @@ async function load_page(url,id,i_count,wait_time){
                          }).then(async browser => 
     {
         
+      console.log("puppeteer launched")
       var sw_log_dir = home_dir+'logs/'
       var stream = fs.createWriteStream(sw_log_dir+id+"_sw.log");
        
@@ -91,10 +96,12 @@ async function load_page(url,id,i_count,wait_time){
             }
           })
           
+          console.log("new page creation")
           const page = await browser.newPage();
           await page.setViewport({ width, height })
           const context = browser.defaultBrowserContext();
           /** Log site details */
+          console.log("Visiting page")
           stream.write('[Visiting Page started @ '+new Date(Date.now()).toLocaleString()+' ]');
           stream.write('\n')
           stream.write('\tID :: ' +id);

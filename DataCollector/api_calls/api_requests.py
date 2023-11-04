@@ -3,9 +3,10 @@ import csv
 import os
 import time
 import sys
+from importlib import reload
 # sys.setdefaultencoding() does not exist, here!
 reload(sys)  # Reload does the trick!
-sys.setdefaultencoding('UTF8')
+#sys.setdefaultencoding('UTF8')
 
 dir_path = '../seed_lists/'
 insert_api_url = 'https://oyi4twvq77.execute-api.us-east-2.amazonaws.com/default/notification-db-add?'
