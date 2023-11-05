@@ -19,7 +19,7 @@ def get_time():
 	return '['+currentDT.strftime("%Y-%m-%d %H:%M:%S") +'] '
 
 def initiate_container(url, id, script_name, iteration_count,  container_timeout):	
-    print (f"[{get_time()}] CInitiating Container with ID {id}")
+    print (f"[{get_time()}] Initiating Container with ID {id}")
     try:
         ## create and setup container ##
         logging.info(get_time() + 'container_'+id+' creating!!')
@@ -34,7 +34,7 @@ def initiate_container(url, id, script_name, iteration_count,  container_timeout
         ## wait for display to be activated ##
         time.sleep(10)
         ## Exeecute the browser automation script
-        execute_script(url, id, script_name,  iteration_count, container_timeout-10)
+        execute_script(url, id, script_name,  iteration_count, container_timeout-100)
     except Exception as e:
         logging.info(e) 
 
@@ -53,7 +53,8 @@ def execute_script(url, id, script_name,  iteration_count, container_timeout):
         for log in logs:
             logging.info('Container_'+id+'LOG :: '+log.decode("utf-8"))
             print (f"{get_time()} Container with ID {id} Log added") 
-
+            if "crawl process ended" in log.decode("utf-8"):
+                break
     
         logging.info(get_time() +'container_'+id+': Execution complete!!')	
         print (f"[{get_time()}] Container with ID {id} execution complete")
@@ -113,7 +114,7 @@ def export_container(id, count):
         bits, stat = container.get_archive('/home/pptruser/resources/')
         for chunk in bits:
             f.write(chunk)
-    with open(dir_path+'dowanloads.tar', 'wb') as f:
+    with open(dir_path+'downloads.tar', 'wb') as f:
         bits, stat = container.get_archive('/home/pptruser/Downloads/')
         for chunk in bits:
             f.write(chunk)
@@ -207,14 +208,14 @@ def docker_prune():
 
 def test():
     remove_containers()
-    initiate_container('https://zip-hudhomes.com/', 'tes_100', 'capture_notifications.js','0', 330)    
+    initiate_container('https://store.minisforum.com/','tes_100', 'capture_notifications.js','0', 330)    
     count=0
     while count<2:
         stop_container('tes_100')
         export_container('tes_100',str(count))
         print (f"{get_time()} Sleeping for 300s")
         time.sleep(300)
-        resume_container('https://zip-hudhomes.com/','tes_100','capture_notifications.js',count,330)
+        resume_container('https://store.minisforum.com/','tes_100','capture_notifications.js',count,330)
         count=count+1
     logging.info(check_if_success('tes_100','0'))
     #export_container('833','9')
